@@ -1,17 +1,21 @@
 import React, { Component, Fragment } from 'react';
 import Spinner from '../layout/Spinner';
 import PropTypes from 'prop-types';
+import Repos from '../repos/Repos';
 import { Link } from 'react-router-dom';
 
 export class User extends Component {
   componentDidMount() {
     this.props.getUser(this.props.match.params.login);
+    this.props.getUserRepos(this.props.match.params.login);
   }
 
   static propTypes = {
     loading: PropTypes.bool,
     user: PropTypes.object.isRequired,
     getUser: PropTypes.func.isRequired,
+    getUserRepos: PropTypes.func.isRequired,
+    repos: PropTypes.array.isRequired,
   };
 
   render() {
@@ -31,7 +35,7 @@ export class User extends Component {
       hireable,
     } = this.props.user;
 
-    const { loading } = this.props;
+    const { loading, repos } = this.props;
 
     if (loading) {
       return <Spinner />;
@@ -39,7 +43,7 @@ export class User extends Component {
 
     return (
       <Fragment>
-        <Link to="/" classname="btn btn-light">
+        <Link to="/" className="btn btn-light">
           Back to Search
         </Link>
         Hireable:{' '}
@@ -55,15 +59,18 @@ export class User extends Component {
             <p>Location: {location}</p>
           </div>
 
-          {bio && (
-            <Fragment>
-              <h3>Bio</h3>
-              {bio}
-            </Fragment>
-          )}
-          <a href={html_url} className="btn btn-dark my-1">
-            Visit Github Profile
-          </a>
+          <div>
+            {bio && (
+              <Fragment>
+                <h3>Bio</h3>
+                {bio}
+              </Fragment>
+            )}
+            <br />
+            <a href={html_url} className="btn btn-dark my-1">
+              Visit Github Profile
+            </a>
+          </div>
           <ul>
             <li>
               {login && (
@@ -94,6 +101,7 @@ export class User extends Component {
           <div className="badge badge-light">Public Repos: {public_repos}</div>
           <div className="badge badge-dark">Public Gists: {public_gists}</div>
         </div>
+        <Repos repos={repos} />
       </Fragment>
     );
   }
