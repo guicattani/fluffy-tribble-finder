@@ -1,107 +1,99 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useContext } from 'react';
 import Spinner from '../layout/Spinner';
-import PropTypes from 'prop-types';
 import Repos from '../repos/Repos';
 import { Link } from 'react-router-dom';
+import GithubContext from '../../context/github/githubContext';
 
-const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
-  useEffect(() => {
-    getUser(match.params.login);
-    getUserRepos(match.params.login);
-    // eslint-disable-next-line
-  }, []);
+const User = ({ match }) => {
+	const githubContext = useContext(GithubContext);
 
-  const {
-    name,
-    avatar_url,
-    location,
-    bio,
-    blog,
-    login,
-    html_url,
-    followers,
-    following,
-    public_repos,
-    public_gists,
-    company,
-    hireable,
-  } = user;
+	const { getUser, loading, user, getUserRepos, repos } = githubContext;
 
-  if (loading) {
-    return <Spinner />;
-  }
+	useEffect(() => {
+		getUser(match.params.login);
+		getUserRepos(match.params.login);
+		// eslint-disable-next-line
+	}, []);
 
-  return (
-    <Fragment>
-      <Link to="/" className="btn btn-light">
-        Back to Search
-      </Link>
-      Hireable:{' '}
-      {hireable ? (
-        <i className="fas fa-check text-success" />
-      ) : (
-        <i className="fas fa-times-circle text-danger" />
-      )}
-      <div className="card grid-2">
-        <div className="all-center">
-          <img src={avatar_url} class_name="round-img" alt="" style={{ width: '150px' }} />
-          <h1>{name}</h1>
-          <p>Location: {location}</p>
-        </div>
+	const {
+		name,
+		avatar_url,
+		location,
+		bio,
+		blog,
+		login,
+		html_url,
+		followers,
+		following,
+		public_repos,
+		public_gists,
+		company,
+		hireable
+	} = user;
 
-        <div>
-          {bio && (
-            <Fragment>
-              <h3>Bio</h3>
-              {bio}
-            </Fragment>
-          )}
-          <br />
-          <a href={html_url} className="btn btn-dark my-1">
-            Visit Github Profile
-          </a>
-        </div>
-        <ul>
-          <li>
-            {login && (
-              <Fragment>
-                <strong>Username: </strong> {login}
-              </Fragment>
-            )}
-          </li>
-          <li>
-            {company && (
-              <Fragment>
-                <strong>Company: </strong> {company}
-              </Fragment>
-            )}
-          </li>
-          <li>
-            {blog && (
-              <Fragment>
-                <strong>Blog: </strong> {blog}
-              </Fragment>
-            )}
-          </li>
-        </ul>
-      </div>
-      <div className="card text-center">
-        <div className="badge badge-primary">Followers: {followers}</div>
-        <div className="badge badge-success">Following: {following}</div>
-        <div className="badge badge-light">Public Repos: {public_repos}</div>
-        <div className="badge badge-dark">Public Gists: {public_gists}</div>
-      </div>
-      <Repos repos={repos} />
-    </Fragment>
-  );
-};
+	if (loading) {
+		return <Spinner />;
+	}
 
-User.propTypes = {
-  loading: PropTypes.bool,
-  user: PropTypes.object.isRequired,
-  getUser: PropTypes.func.isRequired,
-  getUserRepos: PropTypes.func.isRequired,
-  repos: PropTypes.array.isRequired,
+	return (
+		<Fragment>
+			<Link to="/" className="btn btn-light">
+				Back to Search
+			</Link>
+			Hireable:{' '}
+			{hireable ? <i className="fas fa-check text-success" /> : <i className="fas fa-times-circle text-danger" />}
+			<div className="card grid-2">
+				<div className="all-center">
+					<img src={avatar_url} class_name="round-img" alt="" style={{ width: '150px' }} />
+					<h1>{name}</h1>
+					<p>Location: {location}</p>
+				</div>
+
+				<div>
+					{bio && (
+						<Fragment>
+							<h3>Bio</h3>
+							{bio}
+						</Fragment>
+					)}
+					<br />
+					<a href={html_url} className="btn btn-dark my-1">
+						Visit Github Profile
+					</a>
+				</div>
+				<ul>
+					<li>
+						{login && (
+							<Fragment>
+								<strong>Username: </strong> {login}
+							</Fragment>
+						)}
+					</li>
+					<li>
+						{company && (
+							<Fragment>
+								<strong>Company: </strong> {company}
+							</Fragment>
+						)}
+					</li>
+					<li>
+						{blog && (
+							<Fragment>
+								<strong>Blog: </strong> {blog}
+							</Fragment>
+						)}
+					</li>
+				</ul>
+			</div>
+			<div className="card text-center">
+				<div className="badge badge-primary">Followers: {followers}</div>
+				<div className="badge badge-success">Following: {following}</div>
+				<div className="badge badge-light">Public Repos: {public_repos}</div>
+				<div className="badge badge-dark">Public Gists: {public_gists}</div>
+			</div>
+			<Repos repos={repos} />
+		</Fragment>
+	);
 };
 
 export default User;
